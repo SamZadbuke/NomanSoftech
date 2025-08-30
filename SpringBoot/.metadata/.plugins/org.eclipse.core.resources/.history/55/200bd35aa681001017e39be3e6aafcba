@@ -1,0 +1,146 @@
+package com.nomansoftech.controller;
+
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import com.nomansoftech.entities.UserOrder;
+import com.nomansoftech.entities.OrderItem;
+import com.nomansoftech.entities.ProductCategory;
+import com.nomansoftech.entities.ProductSubCategory;
+import com.nomansoftech.entities.ProductSummary;
+import com.nomansoftech.entities.User;
+import com.nomansoftech.models.ResponseStructure;
+import com.nomansoftech.service.UserService;
+
+import java.util.List;
+
+@RestController
+@CrossOrigin
+@RequestMapping("/user")
+public class UserController {
+
+    @Autowired
+    private UserService userService;
+
+    // ===== User Operations =====
+
+    //Running
+    @GetMapping("/")
+    public ResponseStructure getAllUsers() {
+        List<User> users = userService.getAllUsers();
+        return ResponseStructure.onSuccess(200, users, "Users fetched successfully.");
+    }
+    //Running
+    @GetMapping("/{id}")
+    public ResponseStructure getUserById(@PathVariable Integer id) {
+        User user = userService.getUserById(id);
+        return ResponseStructure.onSuccess(200, user, "User fetched successfully.");
+    }
+    //Running
+    
+    @DeleteMapping("/{id}")
+    public ResponseStructure deleteUser(@PathVariable Integer id) {
+        Integer deletedUserId = userService.deleteUser(id);
+        if (deletedUserId != null) {
+            // Success: Return the ID of the deleted user in the data field.
+            return ResponseStructure.onSuccess(200, deletedUserId, "User deleted successfully.");
+        } else {
+            // Failure: Return a 404 status and an error message.
+            return ResponseStructure.onFailure(404, "User not found.");
+        }
+    }
+
+    // ===== Orders =====
+
+    @GetMapping("/{userId}/orders")
+    public ResponseStructure getUserOrders(@PathVariable int userId) {
+        List<UserOrder> orders = userService.getAllOrders(userId);
+        return ResponseStructure.onSuccess(200, orders, "User orders fetched successfully.");
+    }
+
+    @GetMapping("/order/{orderId}/items")
+    public ResponseStructure getOrderItems(@PathVariable int orderId) {
+        List<OrderItem> items = userService.getOrderItemsByOrderId(orderId);
+        return ResponseStructure.onSuccess(200, items, "Order items fetched successfully.");
+    }
+
+    @PutMapping("/order/{orderId}/status")
+    public ResponseStructure updateOrderStatus(@PathVariable int orderId, @RequestParam String status) {
+        boolean updated = userService.updateOrderStatus(orderId, status);
+        return ResponseStructure.onSuccess(202, updated, "Order status updated successfully.");
+    }
+
+    // ===== Category / Subcategory =====
+
+    //Running
+    @GetMapping("/categories")
+    public ResponseStructure getAllCategories() {
+        List<ProductCategory> categories = userService.fetchAllProductCategories();
+        return ResponseStructure.onSuccess(200, categories, "Product categories fetched successfully.");
+    }
+//Running
+    @GetMapping("/subcategories")
+    public ResponseStructure getAllSubCategories() {
+        List<ProductSubCategory> subCategories = userService.fetchAllProductSubCategories();
+        return ResponseStructure.onSuccess(200, subCategories, "Product subcategories fetched successfully.");
+    }
+//
+//    @PutMapping("/subcategory/{id}/price")
+//    public ResponseStructure updateSubCategoryPrice(@PathVariable int id, @RequestParam float price) {
+//        boolean updated = userService.updateProductSubCategoryPrice(id, price);
+//        return ResponseStructure.onSuccess(202, updated, "Subcategory price updated successfully.");
+//    }
+//
+//    @PostMapping("/category")
+//    public ResponseStructure addCategory(@RequestBody ProductCategory category) {
+//        ProductCategory saved = userService.addProductCategory(category);
+//        return ResponseStructure.onSuccess(201, saved, "Product category added successfully.");
+//    }
+//
+//    @PostMapping("/subcategory")
+//    public ResponseStructure addSubCategory(@RequestBody ProductSubCategory subCategory, @RequestParam int categoryId) {
+//        ProductSubCategory saved = userService.addProductSubCategory(subCategory, categoryId);
+//        return ResponseStructure.onSuccess(201, saved, "Product subcategory added successfully.");
+//    }
+//
+//    @DeleteMapping("/category/{id}")
+//    public ResponseStructure deleteCategory(@PathVariable int id) {
+//        boolean deleted = userService.deleteProductCategory(id);
+//        return ResponseStructure.onSuccess(204, deleted, "Product category deleted successfully.");
+//    }
+//
+//    @DeleteMapping("/subcategory/{id}")
+//    public ResponseStructure deleteSubCategory(@PathVariable int id) {
+//        boolean deleted = userService.deleteProductSubCategory(id);
+//        return ResponseStructure.onSuccess(204, deleted, "Product subcategory deleted successfully.");
+//    }
+
+    // ===== Recycling Summary =====
+
+    @GetMapping("/summary/monthly/{userId}")
+    public ResponseStructure getMonthlySummary(@PathVariable int userId) {
+        List<ProductSummary> summary = userService.getMonthlySummary(userId);
+        return ResponseStructure.onSuccess(200, summary, "Monthly recycling summary fetched successfully.");
+    }
+
+    @GetMapping("/summary/yearly/{userId}")
+    public ResponseStructure getYearlySummary(@PathVariable int userId) {
+        List<ProductSummary> summary = userService.getYearlySummary(userId);
+        return ResponseStructure.onSuccess(200, summary, "Yearly recycling summary fetched successfully.");
+    }
+
+    @GetMapping("/summary/monthly")
+    public ResponseStructure getMonthlySummaryForAll() {
+        List<ProductSummary> summary = userService.getMonthlySummaryForAll();
+        return ResponseStructure.onSuccess(200, summary, "Monthly recycling summary for all users fetched successfully.");
+    }
+
+    @GetMapping("/summary/yearly")
+    public ResponseStructure getYearlySummaryForAll() {
+        List<ProductSummary> summary = userService.getYearlySummaryForAll();
+        return ResponseStructure.onSuccess(200, summary, "Yearly recycling summary for all users fetched successfully.");
+    }
+}
+

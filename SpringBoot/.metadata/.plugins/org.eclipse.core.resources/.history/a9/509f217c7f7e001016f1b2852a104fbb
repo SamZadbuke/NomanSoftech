@@ -1,0 +1,124 @@
+package com.nomansoftech.entities;
+
+import java.sql.Timestamp;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+
+
+
+@Entity
+@Table(name = "admin")
+public class Admin {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "adminId")
+    private Integer adminId;
+
+    @NotBlank
+    @Column(nullable = false, length = 255)
+    private String name;
+
+    @NotBlank
+    @Column(nullable = false, unique = true, length = 255)
+    private String email;
+
+    @NotBlank
+    @Column(nullable = false, length = 255)
+    private String password;
+
+    @NotBlank
+    @Column(nullable = false)
+    private Integer isActive;
+
+    @NotBlank
+    @CreationTimestamp
+    private Timestamp createdAt;
+
+    @NotBlank
+    @UpdateTimestamp
+    private Timestamp updatedAt;
+
+    public Admin() {}
+
+    public Admin(Integer adminId, String name, String email, String password, Integer isActive,
+                 Timestamp createdAt, Timestamp updatedAt) {
+        this.adminId = adminId;
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.isActive = isActive;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
+
+    // Getters and Setters
+    
+
+    @Override
+    public String toString() {
+        return "Admin [adminId=" + adminId + ", name=" + name + ", +  email=" + email
+                + ", password=" + password + ", isActive=" + isActive + ", createdAt=" + createdAt + ", updatedAt="
+                + updatedAt + "]";
+    }
+
+	public Integer getAdminId() {
+		return adminId;
+	}
+
+	public void setAdminId(Integer adminId) {
+		this.adminId = adminId;
+	}
+
+	public String getFirstName() {
+		return name;
+	}
+
+	public void setFirstName(String name) {
+		this.name = name;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public Integer getIsActive() {
+		return isActive;
+	}
+
+	public void setIsActive(Integer isActive) {
+		this.isActive = isActive;
+	}
+
+	public Timestamp getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(Timestamp createdAt) {
+		this.createdAt = createdAt;
+	}
+
+	public Timestamp getUpdatedAt() {
+		return updatedAt;
+	}
+
+	public void setUpdatedAt(Timestamp updatedAt) {
+		this.updatedAt = updatedAt;
+	}
+}

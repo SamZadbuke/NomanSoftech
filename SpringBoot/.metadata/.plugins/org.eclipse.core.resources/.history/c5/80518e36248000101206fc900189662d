@@ -1,0 +1,111 @@
+package com.nomansoftech.service;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import com.nomansoftech.entities.Admin;
+import com.nomansoftech.entities.ServiceZone;
+import com.nomansoftech.repository.AdminRepository;
+import com.nomansoftech.repository.ServiceZoneRepository;
+
+@Service
+public class AdminService {
+
+	@Autowired
+	private AdminRepository adminRepository;
+	
+	@Autowired
+	private ServiceZoneRepository serviceZoneRepository;
+	
+	@Autowired
+	private BCryptPasswordEncoder passwordEncoder;
+	
+	
+	public List<Admin> fetchAllAdmin(){
+		return adminRepository.findAll();
+		
+	}
+	
+	public Admin saveAdmin(Admin admin) {
+	    // Hash the password before saving
+	    String rawPassword = admin.getPassword();
+	    admin.setPassword(passwordEncoder.encode(rawPassword));
+	    return adminRepository.save(admin);
+	}
+
+	public void hashExistingPasswords() {
+	    List<Admin> admins = adminRepository.findAll();
+	    for (Admin admin : admins) {
+	        // Only hash if it’s not already hashed
+	        if (!admin.getPassword().startsWith("$2a$")) {
+	            admin.setPassword(passwordEncoder.encode(admin.getPassword()));
+	            adminRepository.save(admin);
+	        }
+	    }
+	}
+
+	
+	public Admin verifyAdmin(String email, String rawPasswd) {
+		Admin admin = adminRepository.findAdminByEmail(email);
+		if (admin != null && passwordEncoder.matches(rawPasswd, admin.getPassword())) {
+			return admin;
+		} else {
+			throw new RuntimeException("Invalid email or password");
+		}
+	}
+
+	public int deleteAdmin(int id) {
+	 if(adminRepository.existsById(id)) {
+		 adminRepository.deleteById(id);
+		 return id;
+	 }
+	 else {
+		 return 0;
+	 }
+	}
+	
+	public Admin updateAdmin(int id,Admin upadtedAdmin) {
+	   Optional <Admin> ExistingAdmin = adminRepository.findById(id);
+	   
+	   if(ExistingAdmin.isPresent()) {
+		   Admin existingAdmin = ExistingAdmin.get();
+		   existingAdmin.setName(upadtedAdmin.getName());
+		   existingAdmin.setEmail(upadtedAdmin.getEmail());
+		   return adminRepository.save(existingAdmin);
+       } else {
+           throw new RuntimeException("Admin with ID " + id + " not found.");
+       }
+	}
+	
+	  public List<ServiceZone> fetchAllServiceZones() {
+	        return serviceZoneRepository.findAll();
+	    }
+	  
+	 public ServiceZone addServiceZone(ServiceZone zone) {
+	        return serviceZoneRepository.save(zone);
+	    }
+	    
+	    public ServiceZone updateServiceZone(int pincode, ServiceZone updatedZone) {
+	        ServiceZone existing = serviceZoneRepository.findByPincode(pincode)
+	            .orElseThrow(() -> new RuntimeException("ServiceZone not found"));
+	        
+	        existing.setCity(updatedZone.getCity());
+	        existing.setState(updatedZone.getState());
+	        return serviceZoneRepository.save(existing);
+	    }
+	    
+	    public boolean deleteServiceZone(int pincode) {
+	        if (serviceZoneRepository.existsById(pincode)) {
+	            serviceZoneRepository.deleteById(pincode);
+	            return true;
+	        }
+	        return false;
+	    }
+	    
+
+	  
+}

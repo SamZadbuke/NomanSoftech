@@ -1,0 +1,162 @@
+package com.nomansoftech.entities;
+
+
+import jakarta.persistence.*;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+@Entity
+@Table(name = "userorders")
+public class UserOrder {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "order_id")
+    private Integer userorder_id;
+
+    // 🔹 Buyer (User placing the order)
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    // 🔹 Delivery mapping (optional entity, kept as Integer for now)
+    @Column(name = "delivery_id")
+    private Integer deliveryId;
+
+    @Column(name = "order_date", nullable = false, columnDefinition = "DATE DEFAULT curdate()")
+    private LocalDate orderDate;
+
+    @Column(name = "order_time", nullable = false, columnDefinition = "TIME DEFAULT curtime()")
+    private LocalTime orderTime;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "order_status", columnDefinition = "ENUM('pending','completed','cancelled') DEFAULT 'pending'")
+    private OrderStatus orderStatus = OrderStatus.pending;
+
+    @Column(name = "created_at", updatable = false, insertable = false,
+            columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at", insertable = false,
+            columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
+    private LocalDateTime updatedAt;
+
+    // 🔹 One order has many items
+    @OneToMany(mappedBy = "userorder", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderItem> items = new ArrayList<>();
+
+    @OneToOne(mappedBy = "userorder", cascade = CascadeType.ALL)
+    private DeliveryAddress deliveryAddress;
+
+    // ✅ Enum for order status
+    public enum OrderStatus {
+        pending,
+        completed,
+        cancelled
+    }
+
+    // ✅ Constructors
+    public UserOrder() {}
+
+    public UserOrder(User user, Integer deliveryId, LocalDate orderDate, LocalTime orderTime,
+                     OrderStatus orderStatus) {
+        this.user = user;
+        this.deliveryId = deliveryId;
+        this.orderDate = orderDate;
+        this.orderTime = orderTime;
+        this.orderStatus = orderStatus;
+    }
+
+    // ✅ Getters & Setters
+    public Integer getOrderId() {
+        return userorder_id;
+    }
+
+    public void setOrderId(Integer orderId) {
+        this.userorder_id = orderId;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Integer getDeliveryId() {
+        return deliveryId;
+    }
+
+    public void setDeliveryId(Integer deliveryId) {
+        this.deliveryId = deliveryId;
+    }
+
+    public LocalDate getOrderDate() {
+        return orderDate;
+    }
+
+    public void setOrderDate(LocalDate orderDate) {
+        this.orderDate = orderDate;
+    }
+
+    public LocalTime getOrderTime() {
+        return orderTime;
+    }
+
+    public void setOrderTime(LocalTime orderTime) {
+        this.orderTime = orderTime;
+    }
+
+    public OrderStatus getOrderStatus() {
+        return orderStatus;
+    }
+
+    public void setOrderStatus(OrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public List<OrderItem> getItems() {
+        return items;
+    }
+
+    public void setItems(List<OrderItem> items) {
+        this.items = items;
+    }
+
+    public void addItem(OrderItem item) {
+        items.add(item);
+        item.setOrder(this); // maintain bidirectional relation
+    }
+
+    public void removeItem(OrderItem item) {
+        items.remove(item);
+        item.setOrder(null);
+    }
+
+    @Override
+    public String toString() {
+        return "UserOrder{" +
+                "orderId=" + userorder_id +
+                ", user=" + user +
+                ", deliveryId=" + deliveryId +
+                ", orderDate=" + orderDate +
+                ", orderTime=" + orderTime +
+                ", orderStatus=" + orderStatus +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                ", items=" + items +
+                '}';
+    }
+}

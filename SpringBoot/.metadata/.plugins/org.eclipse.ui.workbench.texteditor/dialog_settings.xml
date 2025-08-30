@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<item key="hasShownOverlayPopupBefore" value="true"/>
+	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
+		<item key="selection" value="findYearlyForAll()"/>
+		<item key="wrap" value="true"/>
+		<item key="casesensitive" value="false"/>
+		<item key="wholeword" value="false"/>
+		<item key="incremental" value="false"/>
+		<item key="isRegEx" value="false"/>
+		<list key="findhistory">
+			<item value="findYearlyForAll()"/>
+			<item value="Product"/>
+			<item value="findOrderItemsByOrderId"/>
+			<item value="CustomerOrderItem"/>
+			<item value=" customer_order_items"/>
+			<item value="CustomerOrder"/>
+			<item value="mysql"/>
+			<item value="customer"/>
+			<item value="Customer"/>
+			<item value=" @NotEmpty"/>
+		</list>
+		<list key="replacehistory">
+			<item value=" @NotBlank"/>
+			<item value="user"/>
+		</list>
+	</section>
+	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
+		<item key="DIALOG_X_ORIGIN" value="1113"/>
+		<item key="DIALOG_Y_ORIGIN" value="312"/>
+		<item key="DIALOG_WIDTH" value="336"/>
+		<item key="DIALOG_HEIGHT" value="454"/>
+		<item key="DIALOG_FONT_NAME" value="1|Segoe UI|9.0|0|WINDOWS|1|-15|0|0|0|400|0|0|0|1|0|0|0|0|Segoe UI"/>
+	</section>
+	<section name="java.lang.Class">
+		<item key="replaceBarOpen" value="false"/>
+		<list key="findhistory">
+			<item value="customerOrderId"/>
+			<item value="getOrders"/>
+			<item value="getOrderitem"/>
+			<item value="getOrdersByBuyer"/>
+			<item value="customerId}/orders/{orderId"/>
+			<item value="getorders"/>
+			<item value="getorder"/>
+			<item value="Dele"/>
+			<item value="fetchAllCustomers"/>
+			<item value="findAll"/>
+			<item value="cus"/>
+			<item value="getAllOrders"/>
+			<item value="cue"/>
+			<item value="findAllOrdersByUserId"/>
+			<item value="sub"/>
+		</list>
+	</section>
+</section>

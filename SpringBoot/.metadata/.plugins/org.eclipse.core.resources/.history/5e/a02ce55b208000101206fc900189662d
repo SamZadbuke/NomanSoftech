@@ -1,0 +1,84 @@
+package com.nomansoftech.controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import org.springframework.web.bind.annotation.*;
+
+import com.nomansoftech.entities.Admin;
+import com.nomansoftech.entities.ServiceZone;
+import com.nomansoftech.models.Credentials;
+import com.nomansoftech.models.ResponseStructure;
+import com.nomansoftech.service.AdminService;
+
+@RestController
+@CrossOrigin
+@RequestMapping("/admin")
+public class AdminController {
+
+    @Autowired
+    private AdminService adminService;
+
+    @GetMapping("/")
+    public ResponseStructure getAllAdmin() {
+        List<Admin> admin = adminService.fetchAllAdmin();
+        return ResponseStructure.onSuccess(200, admin, "Admins fetched successfully..!");
+    }
+
+    @PostMapping("/signup")
+    public ResponseStructure adminResgister(@RequestBody Admin admin) {
+        Admin savedAdmin = adminService.saveAdmin(admin);
+        return ResponseStructure.onSuccess(200, savedAdmin, "Admin saved successfully..!");
+    }
+
+	@PostMapping(value = "/signin")
+	public ResponseStructure adminLogin(@RequestBody Credentials cred) {
+		Admin signAdmin = adminService.verifyAdmin(cred.getEmail(), cred.getPassword());
+		return ResponseStructure.onLoginSuccess(201, signAdmin, "Admin LoggedIn Successfully..!");
+	}
+
+    @DeleteMapping("/delete/{adminId}")
+    public ResponseStructure deleteAdmin(@PathVariable int adminId) {
+        int result = adminService.deleteAdmin(adminId);
+        return ResponseStructure.onSuccess(204, result, "Admin deleted successfully..!");
+    }
+
+    @PutMapping("{adminId}")
+    public ResponseStructure updateAdmin(@PathVariable int adminId, @RequestBody Admin admin) {
+        Admin updatedAdmin = adminService.updateAdmin(adminId, admin);
+        return ResponseStructure.onSuccess(202, updatedAdmin, "Admin updated successfully..!");
+    }
+
+
+    @GetMapping("/servicezones")
+    public ResponseStructure getAllZones() {
+        List<ServiceZone> zones = adminService.fetchAllServiceZones();
+        return ResponseStructure.onSuccess(200, zones, "Service Zones Fetched Successfully..!");
+    }
+    
+    @PostMapping("/servicezone")
+    public ResponseStructure addZone(@RequestBody ServiceZone zone) {
+        ServiceZone added = adminService.addServiceZone(zone);
+        return ResponseStructure.onSuccess(201, added, "ServiceZone Added Successfully..!");
+    }
+
+    @PutMapping("/servicezone/{pincode}")
+    public ResponseStructure updateZone(@PathVariable int pincode, @RequestBody ServiceZone zone) {
+        ServiceZone updated = adminService.updateServiceZone(pincode, zone);
+        return ResponseStructure.onSuccess(202, updated, "ServiceZone Updated Successfully..!");
+    }
+
+    @DeleteMapping("/servicezone/{pincode}")
+    public ResponseStructure deleteZone(@PathVariable int pincode) {
+        boolean deleted = adminService.deleteServiceZone(pincode);
+        if (deleted)
+            return ResponseStructure.onSuccess(204, adminService, "ServiceZone Deleted Successfully..!");
+        else
+            return ResponseStructure.onSuccess(404, adminService, "ServiceZone Not Found");
+    }
+
+  
+
+}
+

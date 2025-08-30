@@ -1,0 +1,250 @@
+package com.nomansoftech.entities;
+
+
+
+import jakarta.persistence.*;
+
+
+import java.sql.Timestamp;
+
+@Entity
+@Table(name = "deliveryaddress")
+
+public class DeliveryAddress {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "delivery_id")
+    private Integer id;
+
+    @OneToOne
+    @JoinColumn(name = "order_id")
+    private UserOrder userorder_id;
+
+    @Column(name = "user_id", nullable = false)
+    private Integer userId;
+
+    @Column(name = "user_name", nullable = false)
+    private String userName;
+
+    @Column(nullable = false, length = 100)
+    private String state;
+
+    @Column(nullable = false, length = 100)
+    private String city;
+
+    @Column(nullable = false, length = 10)
+    private String pincode;
+
+    @Column(name = "street_name")
+    private String streetName;
+
+    private String landmark;
+
+    @Column(name = "created_at", insertable = false, updatable = false)
+    private Timestamp createdAt;
+
+    @Column(name = "updated_at", insertable = false, updatable = false)
+    private Timestamp updatedAt;
+
+    private String extraCol1;
+    private String extraCol2;
+    private String extraCol3;
+    private String extraCol4;
+    private String extraCol5;
+
+    @ManyToOne
+    @JoinColumn(name = "pincode", referencedColumnName = "pincode", insertable = false, updatable = false)
+    private ServiceZone serviceZone;
+
+    @OneToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "userId", insertable = false, updatable = false)
+    private User user;
+    
+    
+    
+
+	public DeliveryAddress() {
+		super();
+	}
+
+	public DeliveryAddress(Integer id, Integer userId, String userName, String state, String city, String pincode,
+			String streetName, String landmark, Timestamp createdAt, Timestamp updatedAt, String extraCol1,
+			String extraCol2, String extraCol3, String extraCol4, String extraCol5, ServiceZone serviceZone,
+			User user) {
+		super();
+		this.id = id;
+		this.userId = userId;
+		this.userName = userName;
+		this.state = state;
+		this.city = city;
+		this.pincode = pincode;
+		this.streetName = streetName;
+		this.landmark = landmark;
+		this.createdAt = createdAt;
+		this.updatedAt = updatedAt;
+		this.extraCol1 = extraCol1;
+		this.extraCol2 = extraCol2;
+		this.extraCol3 = extraCol3;
+		this.extraCol4 = extraCol4;
+		this.extraCol5 = extraCol5;
+		this.serviceZone = serviceZone;
+		this.user = user;
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public Integer getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Integer userId) {
+		this.userId = userId;
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public String getState() {
+		return state;
+	}
+
+	public void setState(String state) {
+		this.state = state;
+	}
+
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+	public String getPincode() {
+		return pincode;
+	}
+
+	public void setPincode(String pincode) {
+		this.pincode = pincode;
+	}
+
+	public String getStreetName() {
+		return streetName;
+	}
+
+	public void setStreetName(String streetName) {
+		this.streetName = streetName;
+	}
+
+	public String getLandmark() {
+		return landmark;
+	}
+
+	public void setLandmark(String landmark) {
+		this.landmark = landmark;
+	}
+
+	public Timestamp getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(Timestamp createdAt) {
+		this.createdAt = createdAt;
+	}
+
+	public Timestamp getUpdatedAt() {
+		return updatedAt;
+	}
+
+	public void setUpdatedAt(Timestamp updatedAt) {
+		this.updatedAt = updatedAt;
+	}
+
+	public String getExtraCol1() {
+		return extraCol1;
+	}
+
+	public void setExtraCol1(String extraCol1) {
+		this.extraCol1 = extraCol1;
+	}
+
+	public String getExtraCol2() {
+		return extraCol2;
+	}
+
+	public void setExtraCol2(String extraCol2) {
+		this.extraCol2 = extraCol2;
+	}
+
+	public String getExtraCol3() {
+		return extraCol3;
+	}
+
+	public void setExtraCol3(String extraCol3) {
+		this.extraCol3 = extraCol3;
+	}
+
+	public String getExtraCol4() {
+		return extraCol4;
+	}
+
+	public void setExtraCol4(String extraCol4) {
+		this.extraCol4 = extraCol4;
+	}
+
+	public String getExtraCol5() {
+		return extraCol5;
+	}
+
+	public void setExtraCol5(String extraCol5) {
+		this.extraCol5 = extraCol5;
+	}
+
+	public ServiceZone getServiceZone() {
+		return serviceZone;
+	}
+
+	public void setServiceZone(ServiceZone serviceZone) {
+		this.serviceZone = serviceZone;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	@Override
+	public String toString() {
+		return "DeliveryAddress [id=" + id + ", userId=" + userId + ", userName=" + userName + ", state=" + state
+				+ ", city=" + city + ", pincode=" + pincode + ", streetName=" + streetName + ", landmark=" + landmark
+				+ ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + ", extraCol1=" + extraCol1 + ", extraCol2="
+				+ extraCol2 + ", extraCol3=" + extraCol3 + ", extraCol4=" + extraCol4 + ", extraCol5=" + extraCol5
+				+ ", serviceZone=" + serviceZone + ", user=" + user + ", getId()=" + getId() + ", getUserId()="
+				+ getUserId() + ", getUserName()=" + getUserName() + ", getState()=" + getState() + ", getCity()="
+				+ getCity() + ", getPincode()=" + getPincode() + ", getStreetName()=" + getStreetName()
+				+ ", getLandmark()=" + getLandmark() + ", getCreatedAt()=" + getCreatedAt() + ", getUpdatedAt()="
+				+ getUpdatedAt() + ", getExtraCol1()=" + getExtraCol1() + ", getExtraCol2()=" + getExtraCol2()
+				+ ", getExtraCol3()=" + getExtraCol3() + ", getExtraCol4()=" + getExtraCol4() + ", getExtraCol5()="
+				+ getExtraCol5() + ", getServiceZone()=" + getServiceZone() + ", getUser()=" + getUser()
+				+ ", getClass()=" + getClass() + ", hashCode()=" + hashCode() + ", toString()=" + super.toString()
+				+ "]";
+	}
+    
+    
+    
+}

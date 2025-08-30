@@ -1,0 +1,23 @@
+1748933667510	Rename package 'Controller'
+1748933765347	Rename package 'entity'
+1748934031239	Delete element
+1748934037674	Delete element
+1748935385317	Rename package 'entites'
+1748935527443	Rename compilation unit 'ProductCategorey.java'
+1748938808046	Delete element
+1748938832499	Rename type 'AdminDoable'
+1748938849032	Rename package 'interfaces'
+1748938860028	Delete element
+1748938863051	Delete element
+1748938886762	Rename type 'CustomerDaoble'
+1748938903239	Rename type 'ProductCategoreyDaoble'
+1748938916087	Rename type 'ServiceZoneDaoable'
+1748938961859	Rename type 'AdminServiceImpl'
+1748938970783	Rename type 'CustomerServiceImpl'
+1749017502576	Delete element
+1749017507326	Delete element
+1749021971823	Rename package 'com.example.demo'
+1749021994990	Copy package
+1749022002015	Delete element
+1749022047525	Delete element
+1749022050413	Delete element

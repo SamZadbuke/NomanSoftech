@@ -1,0 +1,80 @@
+package com.nomansoftech.repository;
+
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.nomansoftech.entities.Customer;
+import com.nomansoftech.entities.CustomerOrder;
+import com.nomansoftech.entities.OrderItem;
+import com.nomansoftech.entities.ProductSummary;
+public interface CustomerRepository extends JpaRepository<Customer, Integer> {
+
+    // Fetch all orders for a specific customer
+	@Query("SELECT o FROM CustomerOrder o WHERE o.customer.id = :customerId")
+	List<CustomerOrder> findAllOrders(@Param("customerId") int customerId);
+
+
+    // Update order status
+    @Transactional
+    @Modifying
+    @Query("UPDATE CustomerOrder o SET o.orderStatus = :status WHERE o.customerorder_id = :orderId")
+    int updateOrderStatus(@Param("orderId") int orderId, @Param("status") String status);
+
+    // Monthly summary for a specific consumer
+    @Query("SELECT NEW com.nomansoftech.entities.ProductSummary(" +
+    	       "c.categoryId, c.categoryName, SUM(i.quantity), 'Monthly') " +
+    	       "FROM CustomerOrder o " +
+    	       "JOIN o.items i " +
+    	       "JOIN i.product c " +
+    	       "WHERE o.customer.id = :consumerId " +
+    	       "AND MONTH(o.orderDate) = MONTH(CURRENT_DATE) " +
+    	       "GROUP BY c.categoryId, c.categoryName")
+    	List<ProductSummary> findMonthlyByConsumerId(@Param("consumerId") int consumerId);
+
+
+    // Yearly summary
+    @Query("SELECT NEW com.nomansoftech.entities.ProductSummary(" +
+    	       "c.categoryId, c.categoryName, SUM(i.quantity), 'Yearly') " +
+    	       "FROM CustomerOrder o " +
+    	       "JOIN o.items i " +
+    	       "JOIN i.product c " +
+    	       "WHERE o.customer.id = :consumerId " +
+    	       "AND YEAR(o.orderDate) = YEAR(CURRENT_DATE) " +
+    	       "GROUP BY c.categoryId, c.categoryName")
+    	List<ProductSummary> findYearlyByConsumerId(@Param("consumerId") int consumerId);
+
+
+
+
+
+    // Monthly summary for all users
+    @Query("SELECT NEW com.nomansoftech.entities.ProductSummary(" +
+    	       "o.customer.id, 'All Categories', SUM(i.quantity), 'Monthly') " +
+    	       "FROM CustomerOrder o " +
+    	       "JOIN o.items i " +
+    	       "GROUP BY o.customer.id")
+    	List<ProductSummary> findMonthlyForAll();
+
+
+    // Yearly summary for all users
+    @Query("SELECT NEW com.nomansoftech.entities.ProductSummary(o.customer.id, 'All Categories', SUM(i.quantity), 'Yearly') " +
+    	       "FROM CustomerOrder o JOIN o.items i GROUP BY o.customer.id")
+    	List<ProductSummary> findYearlyForAll();
+
+
+//@Query("SELECT i FROM OrderItem i WHERE i.customerorder.customerOrderId = :orderId")
+//    List<OrderItem> findOrderItemsByCustomerOrderId(@Param("orderId") int orderId);
+
+	
+    
+    @Query("SELECT c FROM CustomerOrder c WHERE c.customer.id = :customerId") 
+    List<CustomerOrder> findOrdersBycustomerId(@Param("customerId") int customerId); 
+
+
+
+}

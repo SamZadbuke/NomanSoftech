@@ -1,0 +1,89 @@
+package com.nomansoftech.repository;
+
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.nomansoftech.entities.Customer;
+import com.nomansoftech.entities.CustomerOrder;
+import com.nomansoftech.entities.OrderItem;
+import com.nomansoftech.entities.ProductSummary;
+
+public interface CustomerRepository extends JpaRepository<Customer, Integer> {
+
+    // ✅ Fetch all orders for a specific customer
+    @Query("SELECT o FROM CustomerOrder o WHERE o.customer.customer_id = :customerId")
+    List<CustomerOrder> findAllOrders(@Param("customerId") int customerId);
+
+    // ✅ Update order status
+    @Transactional
+    @Modifying
+    @Query("UPDATE CustomerOrder o SET o.orderStatus = :status WHERE o.customerOrderId = :orderId")
+    int updateOrderStatus(@Param("orderId") int orderId, @Param("status") String status);
+
+    // ✅ Monthly summary for a specific consumer
+    @Query("SELECT NEW com.nomansoftech.entities.ProductSummary(" +
+               "c.categoryId, c.categoryName, SUM(i.quantity), 'Monthly') " +
+               "FROM CustomerOrder o " +
+               "JOIN o.items i " +
+               "JOIN i.product c " +
+               "WHERE o.customer.customer_id = :consumerId " +
+               "AND MONTH(o.orderDate) = MONTH(CURRENT_DATE) " +
+               "GROUP BY c.categoryId, c.categoryName")
+    List<ProductSummary> findMonthlyByConsumerId(@Param("consumerId") int consumerId);
+
+    // ✅ Yearly summary for a specific consumer
+    @Query("SELECT NEW com.nomansoftech.entities.ProductSummary(" +
+               "c.categoryId, c.categoryName, SUM(i.quantity), 'Yearly') " +
+               "FROM CustomerOrder o " +
+               "JOIN o.items i " +
+               "JOIN i.product c " +
+               "WHERE o.customer.customer_id = :consumerId " +
+               "AND YEAR(o.orderDate) = YEAR(CURRENT_DATE) " +
+               "GROUP BY c.categoryId, c.categoryName")
+    List<ProductSummary> findYearlyByConsumerId(@Param("consumerId") int consumerId);
+
+    // ✅ Monthly summary for all users
+    @Query("SELECT NEW com.nomansoftech.entities.ProductSummary(" +
+               "o.customer.customer_id, 'All Categories', SUM(i.quantity), 'Monthly') " +
+               "FROM CustomerOrder o " +
+               "JOIN o.items i " +
+               "GROUP BY o.customer.customer_id")
+    List<ProductSummary> findMonthlyForAll();
+
+    // ✅ Yearly summary for all users
+    @Query("SELECT NEW com.nomansoftech.entities.ProductSummary(" +
+               "o.customer.customer_id, 'All Categories', SUM(i.quantity), 'Yearly') " +
+               "FROM CustomerOrder o " +
+               "JOIN o.items i " +
+               "GROUP BY o.customer.customer_id")
+    List<ProductSummary> findYearlyForAll();
+
+    // ✅ Fetch order items by customer and order
+    @Query("SELECT oi FROM OrderItem oi JOIN oi.customerOrder o JOIN o.customer c " +
+               "WHERE c.customer_id = :customerId AND o.customerOrderId = :orderId")
+    List<OrderItem> findOrderItemsByCustomerAndOrder(@Param("customerId") int customerId,
+                                                     @Param("orderId") int orderId);
+
+    // ✅ Fetch orders by customerId
+    @Query("SELECT c FROM CustomerOrder c WHERE c.customer.customer_id = :customerId")
+    List<CustomerOrder> findOrdersByCustomerId(@Param("customerId") int customerId);
+    
+    
+    
+    // ✅ Get all orders for a shopowner
+    @Query("SELECT o FROM CustomerOrder o WHERE o.customer.customerId = :customerId")
+    List<CustomerOrder> findOrdersByCustomerId(@Param("customerId") Integer customerId);
+
+    // ✅ Get specific order with items
+    @Query("SELECT o FROM CustomerOrder o JOIN FETCH o.items WHERE o.customerOrderId = :orderId")
+    CustomerOrder findOrderWithItems(@Param("orderId") Integer orderId);
+
+    // ✅ (Optional) Get all orders placed by a buyer, but using same repo
+    @Query("SELECT o FROM CustomerOrder o WHERE o.user.userId = :userId")
+    List<CustomerOrder> findOrdersByBuyerId(@Param("userId") Integer userId);
+}

@@ -1,0 +1,46 @@
+package com.nomansoftech.repository;
+
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.nomansoftech.entities.Order;
+import com.nomansoftech.entities.OrderItem;
+import com.nomansoftech.entities.ProductSummary;
+import com.nomansoftech.entities.User;
+
+public interface UserRepository  extends JpaRepository<User, Integer>{
+	
+	
+	@Query("SELECT o FROM `Order` o WHERE o.user.userId = :userId")
+	List<Order> findAllOrders(@Param("userId") int userId);
+
+
+	@Query("SELECT i FROM OrderItem i WHERE i.order.orderId = :orderId")
+	List<OrderItem> findOrderItemsByOrderId(@Param("orderId") int orderId);
+
+
+	    @Modifying
+	    @Transactional
+	    @Query("UPDATE `Order` o SET o.orderStatus = :status WHERE o.orderId = :orderId")
+	    int updateOrderStatus(@Param("orderId") int orderId, @Param("status") String status);
+
+
+
+	 @Query("SELECT s FROM ProductSummary s WHERE s.userId = :userId AND MONTH(s.date) = MONTH(CURRENT_DATE) AND YEAR(s.date) = YEAR(CURRENT_DATE)")
+	    List<ProductSummary> findMonthlyByUserId(@Param("userId") int userId);
+
+	    @Query("SELECT s FROM ProductSummary s WHERE s.userId = :userId AND YEAR(s.date) = YEAR(CURRENT_DATE)")
+	    List<ProductSummary> findYearlyByUserId(@Param("consumerId") int userId);
+
+	    @Query("SELECT s FROM ProductSummary s WHERE MONTH(s.date) = MONTH(CURRENT_DATE) AND YEAR(s.date) = YEAR(CURRENT_DATE)")
+	    List<ProductSummary> findMonthlyForAll();
+
+	    @Query("SELECT s FROM ProductSummary s WHERE YEAR(s.date) = YEAR(CURRENT_DATE)")
+	    List<ProductSummary> findYearlyForAll();
+
+}

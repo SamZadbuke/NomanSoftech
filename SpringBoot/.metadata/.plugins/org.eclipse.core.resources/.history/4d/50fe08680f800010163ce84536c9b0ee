@@ -1,0 +1,187 @@
+package com.nomansoftech.service;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.nomansoftech.entities.Customer;
+import com.nomansoftech.entities.CustomerOrder;
+import com.nomansoftech.entities.OrderItem;
+import com.nomansoftech.entities.ProductCategory;
+import com.nomansoftech.entities.ProductSubCategory;
+import com.nomansoftech.entities.ProductSummary;
+import com.nomansoftech.entities.UserOrder;
+import com.nomansoftech.repository.CustomerRepository;
+import com.nomansoftech.repository.ProductCategoryRepository;
+import com.nomansoftech.repository.ProductSubCategoryRepository;
+
+
+
+@Service
+public class CustomerService {
+
+    @Autowired
+    private CustomerRepository customerRepository;
+
+    @Autowired
+    private ProductCategoryRepository productCategoryRepository;
+
+    @Autowired
+    private ProductSubCategoryRepository productSubCategoryRepository;  
+    
+    @Autowired
+    private CustomerRepository summaryRepository;
+
+
+    // =================== Customer Operations ===================
+
+    public List<Customer> fetchAllCustomers() {
+        return customerRepository.findAll();
+    }
+
+    public Customer fetchCustomerById(Integer id) {
+        return customerRepository.findById(id).orElse(null);
+    }
+
+    public int deleteCustomer(Integer id) {
+        if (customerRepository.existsById(id)) {
+            customerRepository.deleteById(id);
+            return id;
+        } else {
+            return 0;
+        }
+    }
+
+ 
+    public List<CustomerOrder> getAllOrders(int customerId) {
+        return customerRepository.findAllOrders(customerId);
+    }
+
+    public List<OrderItem> getOrderItemsByCustomerAndOrder(int customerId, int orderId) {
+        Customer customer = customerRepository.findById(customerId)
+                .orElseThrow(() -> new RuntimeException("Customer not found"));
+
+        return customer.getOrders().stream()
+                .filter(order -> order.getOrderId().equals(orderId))  // check orderId
+                .findFirst()
+                .map(UserOrder::getItems)  // fetch items
+                .orElseThrow(() -> new RuntimeException("Order not found for this customer"));
+    }
+
+
+
+
+    public boolean updateOrderStatus(int orderId, String status) {
+        return customerRepository.updateOrderStatus(orderId, status) > 0;
+    }
+
+    // =================== Category/Subcategory Management ===================
+
+    public List<ProductCategory> fetchAllProductCategories() {
+        return productCategoryRepository.findAll();
+    }
+
+    public List<ProductSubCategory> fetchAllProductSubCategories() {
+        return productSubCategoryRepository.findAll();
+    }
+
+//    // ========== 1. Update Price for Products by Subcategory ID ==========
+
+    public boolean updateProductSubCategoryPrice(int subCategoryId, float newPrice) {
+        ProductSubCategory subCategory = productSubCategoryRepository.findById(subCategoryId).orElse(null);
+
+        if (subCategory != null) {
+            subCategory.setPrice(newPrice); // Set new price
+            productSubCategoryRepository.save(subCategory); // Save changes
+            return true;
+        } else {
+            return false; // Subcategory not found
+        }
+    }
+
+
+
+    // ========== 3. Add Product Category ==========
+
+    public ProductCategory addProductCategory(ProductCategory category) {
+        return productCategoryRepository.save(category);
+    }
+
+    // ========== 5. Add Product Subcategory ==========
+
+    public ProductSubCategory addProductSubCategory(ProductSubCategory subCategory, int categoryId) {
+        // Fetch the actual ProductCategory entity
+        ProductCategory category = productCategoryRepository.findById(categoryId).orElse(null);
+        
+        if (category != null) {
+            // Set the entity, not the ID
+            subCategory.setCategory(category);
+            return productSubCategoryRepository.save(subCategory);
+        }
+        
+        // Category not found, cannot add subcategory
+        return null;
+    }
+
+
+
+    // ========== 6. Delete Product Category ==========
+
+    public boolean deleteProductCategory(Integer categoryId) {
+        if (productCategoryRepository.existsById(categoryId)) {
+            productCategoryRepository.deleteById(categoryId);
+            return true;
+        }
+        return false;
+    }
+
+    // ========== 7. Delete Product Subcategory ==========
+
+    public boolean deleteProductSubCategory(Integer subCategoryId) {
+        if (productSubCategoryRepository.existsById(subCategoryId)) {
+            productSubCategoryRepository.deleteById(subCategoryId);
+            return true;
+        }
+        return false;
+    }
+
+
+
+//Recycling Summary
+
+public List<ProductSummary> getMonthlySummary(int consumerId) {
+ return summaryRepository.findMonthlyByConsumerId(consumerId);
+}
+
+public List<ProductSummary> getYearlySummary(int consumerId) {
+ return summaryRepository.findYearlyByConsumerId(consumerId);
+}
+
+//public List<ProductSummary> getYearlyRecyclingSummaryForAll() {
+// return summaryRepository.findYearlyForAll();
+//}
+
+public List<ProductSummary> getMonthlySummaryForAll() {
+ return summaryRepository.findMonthlyForAll();
+}
+
+
+
+
+
+
+public List<CustomerOrder> getOrdersByShopowner(Integer customerId) {
+    return customerRepository.findOrdersByCustomerId(customerId);
+}
+
+public CustomerOrder getOrderDetails(Integer orderId) {
+    return customerRepository.findOrderWithItems(orderId);
+}
+
+public List<CustomerOrder> getOrdersByBuyer(Integer userId) {
+    return customerRepository.findOrdersByBuyerId(userId);
+}
+}
+
+

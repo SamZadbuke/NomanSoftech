@@ -1,0 +1,204 @@
+package com.nomansoftech.entities;
+
+
+import java.sql.Timestamp;
+import java.util.List;
+
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+
+@Entity
+@Table(name = "user")
+public class User {
+
+    
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @NotBlank
+    private Integer customerId;
+
+    @Id
+    @NotBlank
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(nullable = false)
+    private Integer userId;
+
+    @NotBlank
+    @Column(nullable = false, length = 255)
+    private String name;
+
+    @NotBlank
+    @Column(nullable = false, unique = true, length = 255)
+    private String email;
+
+    @NotBlank
+    @Column(nullable = false, length = 15)
+    private String mobileNumber;
+
+    @NotBlank
+    @Column(nullable = false, length = 255)
+    private String password;
+
+    @NotBlank
+    @Column(nullable = false, length = 255)
+    private String state;
+
+    @NotBlank
+    @Column(nullable = false, length = 255)
+    private String city;
+
+    @NotBlank
+    @Column(length = 255)
+    private String imageName = "default.jpg";
+
+    @NotBlank
+    @Column(nullable = false, length = 20)
+    private String pincode;
+    
+    private String consumerStatus;
+    private Timestamp registeredAt;
+    private Timestamp lastModifiedAt;
+    
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<UserOrder> orders;
+    
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<DeliveryAddress> deliveryAddresses;
+
+    // No-args constructor
+    public User() {}
+
+    // All-args constructor
+    public User(@NotBlank Integer customerId, @NotBlank Integer userId, @NotBlank String name, @NotBlank String email,
+			@NotBlank String mobileNumber, @NotBlank String password, @NotBlank String state, @NotBlank String city,
+			@NotBlank String imageName, @NotBlank String pincode, String consumerStatus, Timestamp registeredAt,
+			Timestamp lastModifiedAt) {
+		super();
+		this.customerId = customerId;
+		this.userId = userId;
+		this.name = name;
+		this.email = email;
+		this.mobileNumber = mobileNumber;
+		this.password = password;
+		this.state = state;
+		this.city = city;
+		this.imageName = imageName;
+		this.pincode = pincode;
+		this.consumerStatus = consumerStatus;
+		this.registeredAt = registeredAt;
+		this.lastModifiedAt = lastModifiedAt;
+	}
+
+ // Getters and Setters
+    public Integer getCustomerId() {
+        return customerId;
+    }
+    
+	public String getConsumerStatus() {
+		return consumerStatus;
+	}
+
+	public void setConsumerStatus(String consumerStatus) {
+		this.consumerStatus = consumerStatus;
+	}
+
+	public Timestamp getRegisteredAt() {
+		return registeredAt;
+	}
+
+	public void setRegisteredAt(Timestamp registeredAt) {
+		this.registeredAt = registeredAt;
+	}
+
+	public Timestamp getLastModifiedAt() {
+		return lastModifiedAt;
+	}
+
+	public void setLastModifiedAt(Timestamp lastModifiedAt) {
+		this.lastModifiedAt = lastModifiedAt;
+	}
+
+	public void setCustomerId(Integer customerId) {
+        this.customerId = customerId;
+    }
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getMobileNumber() {
+        return mobileNumber;
+    }
+
+    public void setMobileNumber(String mobileNumber) {
+        this.mobileNumber = mobileNumber;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getImageName() {
+        return imageName;
+    }
+
+    public void setImageName(String imageName) {
+        this.imageName = imageName;
+    }
+
+    public String getPincode() {
+        return pincode;
+    }
+
+    public void setPincode(String pincode) {
+        this.pincode = pincode;
+    }
+
+	@Override
+	public String toString() {
+		return "User [customerId=" + customerId + ", userId=" + userId + ", name=" + name + ", email=" + email
+				+ ", mobileNumber=" + mobileNumber + ", password=" + password + ", state=" + state + ", city=" + city
+				+ ", imageName=" + imageName + ", pincode=" + pincode + ", consumerStatus=" + consumerStatus
+				+ ", registeredAt=" + registeredAt + ", lastModifiedAt=" + lastModifiedAt + "]";
+	}
+
+}

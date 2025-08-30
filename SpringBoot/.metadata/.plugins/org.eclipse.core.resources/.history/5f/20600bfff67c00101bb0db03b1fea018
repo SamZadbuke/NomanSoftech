@@ -1,0 +1,45 @@
+package com.nomansoftech.entities;
+
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "order_items")
+public class OrderItem {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer itemId;
+
+    @ManyToOne
+    @JoinColumn(name = "order_id")
+    private CustomerOrder order;
+
+    @ManyToOne
+    @JoinColumn(name = "sub_category_id")
+    private ProductSubCategory subCategory;
+
+    private int quantityKg;
+
+    public OrderItem() {}
+
+    // Getters and setters
+    public Integer getItemId() { return itemId; }
+    public void setItemId(Integer itemId) { this.itemId = itemId; }
+    public CustomerOrder getOrder() { return order; }
+    public void setOrder(CustomerOrder Order) { this.order = Order; }
+    public ProductSubCategory getSubCategory() { return subCategory; }
+    public void setSubCategory(ProductSubCategory subCategory) { this.subCategory = subCategory; }
+    public int getQuantity() { return quantityKg; }
+    public void setQuantity(int quantity) { this.quantityKg = quantity; }
+
+	@Override
+	public String toString() {
+		return "OrderItem [itemId=" + itemId + ", order=" + order + ", subCategory=" + subCategory + ", quantity="
+				+ quantityKg + ", getItemId()=" + getItemId() + ", getOrder()=" + getOrder() + ", getSubCategory()="
+				+ getSubCategory() + ", getQuantity()=" + getQuantity() + ", getClass()=" + getClass() + ", hashCode()="
+				+ hashCode() + ", toString()=" + super.toString() + "]";
+	}
+    
+    
+    
+}

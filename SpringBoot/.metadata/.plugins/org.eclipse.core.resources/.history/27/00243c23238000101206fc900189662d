@@ -1,0 +1,23 @@
+package com.nomansoftech;
+
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.stereotype.Component;
+
+import com.nomansoftech.service.AdminService;
+
+@Component
+public class AdminPasswordUpdater implements CommandLineRunner {
+
+    private final AdminService adminService;
+
+    public AdminPasswordUpdater(AdminService adminService) {
+        this.adminService = adminService;
+    }
+
+    @Override
+    public void run(String... args) throws Exception {
+        adminService.hashExistingPasswords();
+        System.out.println("Existing admin passwords hashed successfully!");
+    }
+}
+

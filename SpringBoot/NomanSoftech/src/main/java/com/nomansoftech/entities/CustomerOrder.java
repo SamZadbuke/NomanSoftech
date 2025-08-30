@@ -1,0 +1,88 @@
+package com.nomansoftech.entities;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "customerorder")
+public class CustomerOrder {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "order_id")   // single PK
+    private Integer orderId;
+
+    // 🔹 Buyer (User)
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    // 🔹 Seller / Shopowner (Customer table)
+    @ManyToOne
+    @JoinColumn(name = "customer_id", nullable = false)
+    private Customer customer;
+
+    @Column(name = "order_date")
+    private LocalDateTime orderDate;
+
+    @Column(name = "total_amount")
+    private BigDecimal totalAmount;
+
+    @Column(name = "order_status")
+    private String orderStatus;
+
+    @Column(name = "delivery_address")
+    private String deliveryAddress;
+
+    @OneToMany(mappedBy = "customerOrder", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderItem> items = new ArrayList<>();
+
+    public CustomerOrder() {}
+
+    public CustomerOrder(Integer orderId, User user, Customer customer,
+                         LocalDateTime orderDate, BigDecimal totalAmount,
+                         String orderStatus, String deliveryAddress,
+                         List<OrderItem> items) {
+        this.orderId = orderId;
+        this.user = user;
+        this.customer = customer;
+        this.orderDate = orderDate;
+        this.totalAmount = totalAmount;
+        this.orderStatus = orderStatus;
+        this.deliveryAddress = deliveryAddress;
+        this.items = items;
+    }
+
+    // ✅ Getters & Setters
+    public Integer getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(Integer orderId) {
+        this.orderId = orderId;
+    }
+
+    public User getUser() { return user; }
+    public void setUser(User user) { this.user = user; }
+
+    public Customer getCustomer() { return customer; }
+    public void setCustomer(Customer customer) { this.customer = customer; }
+
+    public LocalDateTime getOrderDate() { return orderDate; }
+    public void setOrderDate(LocalDateTime orderDate) { this.orderDate = orderDate; }
+
+    public BigDecimal getTotalAmount() { return totalAmount; }
+    public void setTotalAmount(BigDecimal totalAmount) { this.totalAmount = totalAmount; }
+
+    public String getOrderStatus() { return orderStatus; }
+    public void setOrderStatus(String orderStatus) { this.orderStatus = orderStatus; }
+
+    public String getDeliveryAddress() { return deliveryAddress; }
+    public void setDeliveryAddress(String deliveryAddress) { this.deliveryAddress = deliveryAddress; }
+
+    public List<OrderItem> getItems() { return items; }
+    public void setItems(List<OrderItem> items) { this.items = items; }
+}

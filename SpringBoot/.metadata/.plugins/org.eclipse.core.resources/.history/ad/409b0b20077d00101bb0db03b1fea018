@@ -1,0 +1,157 @@
+package com.nomansoftech.entities;
+
+import jakarta.persistence.*;
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+
+@Entity
+@Table(name = "userorderitems")
+public class OrderItem {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "item_id")
+    private Integer itemId;
+
+    // Many-to-One relationship with Order
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id", nullable = false)
+    private UserOrder userorder;
+    
+    @ManyToOne
+    @JoinColumn(name = "orderId")
+    private CustomerOrder customerOrder;
+
+    // Many-to-One relationship with Product
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id")
+    private ProductCategory product;
+
+    @Column(nullable = false)
+    private Integer quantity = 1;
+
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal price;
+
+    @Column(name = "total_price", precision = 10, scale = 2)
+    private BigDecimal totalPrice;
+
+    @Column(name = "created_at", insertable = false, updatable = false)
+    private Timestamp createdAt;
+
+    @Column(name = "updated_at", insertable = false, updatable = false)
+    private Timestamp updatedAt;
+
+    // Invisible extra columns
+    @Column(name = "extra_col1")
+    private String extraCol1;
+
+    @Column(name = "extra_col2")
+    private String extraCol2;
+
+    @Column(name = "extra_col3")
+    private String extraCol3;
+
+    @Column(name = "extra_col4")
+    private String extraCol4;
+
+    @Column(name = "extra_col5")
+    private String extraCol5;
+
+    // Getters and setters
+    public Integer getItemId() {
+        return itemId;
+    }
+
+    public void setItemId(Integer itemId) {
+        this.itemId = itemId;
+    }
+
+    public UserOrder getOrder() {
+        return userorder;
+    }
+
+    public void setOrder(UserOrder order) {
+        this.userorder = order;
+    }
+
+    public ProductCategory getProduct() {
+        return product;
+    }
+
+    public void setProduct(ProductCategory product) {
+        this.product = product;
+    }
+
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
+
+    public BigDecimal getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(BigDecimal totalPrice) {
+        this.totalPrice = totalPrice;
+    }
+
+    public Timestamp getCreatedAt() {
+        return createdAt;
+    }
+
+    public Timestamp getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public String getExtraCol1() {
+        return extraCol1;
+    }
+
+    public void setExtraCol1(String extraCol1) {
+        this.extraCol1 = extraCol1;
+    }
+
+    public String getExtraCol2() {
+        return extraCol2;
+    }
+
+    public void setExtraCol2(String extraCol2) {
+        this.extraCol2 = extraCol2;
+    }
+
+    public String getExtraCol3() {
+        return extraCol3;
+    }
+
+    public void setExtraCol3(String extraCol3) {
+        this.extraCol3 = extraCol3;
+    }
+
+    public String getExtraCol4() {
+        return extraCol4;
+    }
+
+    public void setExtraCol4(String extraCol4) {
+        this.extraCol4 = extraCol4;
+    }
+
+    public String getExtraCol5() {
+        return extraCol5;
+    }
+
+    public void setExtraCol5(String extraCol5) {
+        this.extraCol5 = extraCol5;
+    }
+}

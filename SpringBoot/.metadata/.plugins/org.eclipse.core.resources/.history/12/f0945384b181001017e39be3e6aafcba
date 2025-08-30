@@ -1,0 +1,173 @@
+package com.nomansoftech.controller;
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import com.nomansoftech.entities.Customer;
+import com.nomansoftech.entities.CustomerOrder;
+import com.nomansoftech.entities.OrderItem;
+import com.nomansoftech.entities.ProductCategory;
+import com.nomansoftech.entities.ProductSubCategory;
+import com.nomansoftech.models.ProductSummary;
+import com.nomansoftech.models.ResponseStructure;
+import com.nomansoftech.service.CustomerService;
+
+import java.util.List;
+
+@RestController
+@CrossOrigin
+@RequestMapping("/customer")
+public class CustomerController {
+
+    @Autowired
+    private CustomerService customerService;
+
+    // ===== Customer Operations =====
+
+    //Running
+    @GetMapping("/")
+    public ResponseStructure getAllCustomers() {
+        List<Customer> customers = customerService.fetchAllCustomers();
+        return ResponseStructure.onSuccess(200, customers, "Customers fetched successfully.");
+    }
+     //Running
+    @GetMapping("/{customerId}")
+    public Customer getCustomerById(@PathVariable Integer customerId) {
+        return customerService.getCustomerById(customerId);
+    }
+    
+    //Running
+    @DeleteMapping("/{id}")
+    public ResponseStructure deleteCustomer(@PathVariable Integer id) {
+        int result = customerService.deleteCustomer(id);
+        return ResponseStructure.onSuccess(204, result, "Customer deleted successfully.");
+    }
+
+    // ===== Orders =====
+
+    @GetMapping("/{customerId}/orders")
+    public ResponseStructure getOrders(@PathVariable int customerId) {
+        List<CustomerOrder> orders = customerService.getAllOrders(customerId);
+        return ResponseStructure.onSuccess(200, orders, "Orders fetched successfully.");
+    }
+
+    @GetMapping("/customers/{customerId}/orders/{orderId}/items")
+    public ResponseStructure getOrderItems(
+            @PathVariable int customerId,
+            @PathVariable int orderId) {
+
+        List<OrderItem> items = customerService.getOrderItemsByCustomerAndOrder(customerId, orderId);
+
+        return ResponseStructure.onSuccess(200, items, "Order items fetched successfully.");
+    }
+
+
+
+
+    @PutMapping("/order/{orderId}/status")
+    public ResponseStructure updateOrderStatus(@PathVariable int orderId, @RequestParam String status) {
+        boolean updated = customerService.updateOrderStatus(orderId, status);
+        return ResponseStructure.onSuccess(202, updated, "Order status updated successfully.");
+    }
+
+    // ===== Category/Subcategory =====
+
+    @GetMapping("/categories")
+    public ResponseStructure getAllCategories() {
+        List<ProductCategory> categories = customerService.fetchAllProductCategories();
+        return ResponseStructure.onSuccess(200, categories, "Product categories fetched successfully.");
+    }
+
+    @GetMapping("/subcategories")
+    public ResponseStructure getAllSubCategories() {
+        List<ProductSubCategory> subCategories = customerService.fetchAllProductSubCategories();
+        return ResponseStructure.onSuccess(200, subCategories, "Product subcategories fetched successfully.");
+    }
+
+    @PutMapping("/subcategory/{id}/price")
+    public ResponseStructure updateSubCategoryPrice(@PathVariable int id, @RequestParam float price) {
+        boolean updated = customerService.updateProductSubCategoryPrice(id, price);
+        return ResponseStructure.onSuccess(202, updated, "Subcategory price updated successfully.");
+    }
+
+    @PostMapping("/category")
+    public ResponseStructure addCategory(@RequestBody ProductCategory category) {
+        ProductCategory saved = customerService.addProductCategory(category);
+        return ResponseStructure.onSuccess(201, saved, "Product category added successfully.");
+    }
+
+    @PostMapping("/subcategory")
+    public ResponseStructure addSubCategory(@RequestBody ProductSubCategory subCategory, @RequestParam int categoryId) {
+        ProductSubCategory saved = customerService.addProductSubCategory(subCategory, categoryId);
+        return ResponseStructure.onSuccess(201, saved, "Product subcategory added successfully.");
+    }
+
+    @DeleteMapping("/category/{id}")
+    public ResponseStructure deleteCategory(@PathVariable int id) {
+        boolean deleted = customerService.deleteProductCategory(id);
+        return ResponseStructure.onSuccess(204, deleted, "Product category deleted successfully.");
+    }
+
+    @DeleteMapping("/subcategory/{id}")
+    public ResponseStructure deleteSubCategory(@PathVariable int id) {
+        boolean deleted = customerService.deleteProductSubCategory(id);
+        return ResponseStructure.onSuccess(204, deleted, "Product subcategory deleted successfully.");
+    }
+
+    // ===== Recycling Summary =====
+
+//    @GetMapping("/summary/monthly/{consumerId}")
+//    public ResponseStructure getMonthlySummary(@PathVariable int consumerId) {
+//        List<ProductSummary> summary = customerService.getMonthlySummary(consumerId);
+//        return ResponseStructure.onSuccess(200, summary, "Monthly recycling summary fetched successfully.");
+//    }
+//
+//    @GetMapping("/summary/yearly/{consumerId}")
+//    public ResponseStructure getYearlySummary(@PathVariable int consumerId) {
+//        List<ProductSummary> summary = customerService.getYearlySummary(consumerId);
+//        return ResponseStructure.onSuccess(200, summary, "Yearly recycling summary fetched successfully.");
+//    }
+//
+//    @GetMapping("/summary/monthly")
+//    public ResponseStructure getMonthlySummaryForAll() {
+//        List<ProductSummary> summary = customerService.getMonthlySummaryForAll();
+//        return ResponseStructure.onSuccess(200, summary, "Monthly recycling summary for all fetched successfully.");
+//    }
+//
+////    @GetMapping("/summary/yearly")
+////    public ResponseStructure getYearlySummaryForAll() {
+////        List<ProductSummary> summary = customerService.getYearlyRecyclingSummaryForAll();
+////        return ResponseStructure.onSuccess(200, summary, "Yearly recycling summary for all fetched successfully.");
+////    }
+//    
+//    
+    
+    
+ //  orders
+
+    // ✅ Specific order details
+    @GetMapping("/{customerId}/orders/{orderId}")
+    public CustomerOrder getOrderDetails(@PathVariable Integer customerId,
+                                         @PathVariable Integer orderId) {
+        // optional: validate that this order belongs to that customer
+        CustomerOrder order = customerService.getOrderDetails(orderId);
+        if (!order.getCustomer().getCustomerId().equals(customerId)) {
+            throw new RuntimeException("Order does not belong to this customer");
+        }
+        return order;
+    }
+
+    // ✅ Buyer’s orders (separate endpoint for users)
+    @GetMapping("/user/{userId}/orders")
+    public List<CustomerOrder> getOrdersByUser(@PathVariable Integer userId) {
+        return customerService.getOrdersByUser(userId);
+    }
+}
+
+	
+	
+
+
+
+	
